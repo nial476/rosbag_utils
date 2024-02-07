@@ -1,6 +1,7 @@
 import rospy
 import rosbag
-from rosbag_utils.ros_to_numpy_helpers import (
+# from rosb
+from ros_to_numpy_helpers import (
     ros_camera_info_to_np_intrinsic,
     ros_image_to_np,
     ros_pose_to_np_se3_matrix,
@@ -64,6 +65,7 @@ class RosbagReader:
             self._postprocess_type = {
                 'sensor_msgs/Image': ros_image_to_np,
                 'geometry_msgs/PoseWithCovarianceStamped': ros_pose_to_np_se3_matrix,
+                
                 'sensor_msgs/CameraInfo': ros_camera_info_to_np_intrinsic,
                 'sensor_msgs/JointState': ros_joint_states_to_numpy,
             }
