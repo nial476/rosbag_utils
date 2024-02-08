@@ -5,17 +5,8 @@ import rospy
 from geometry_msgs.msg import PoseArray, PoseStamped, Pose, TransformStamped
 from visualization_msgs.msg import Marker, MarkerArray
 import os
-# import tf2
 from scipy.spatial.transform import Rotation as R
-
-def norm_pos(pos):
-    mag = np.sqrt(pos.x**2 + pos.y**2 + pos.z**2)
-    # out =
-    return mag 
-
-def norm_quat(quat):
-    mag = np.sqrt(quat.x**2 + quat.y**2 + quat.z**2 + quat.w**2)
-    return mag
+# from nerfstudio.models.instant_ngp import NGPModel
 
 def extract_pose_from_tf(element:TransformStamped):
             p = PoseStamped()
@@ -89,6 +80,10 @@ def vizualize_path(p:PoseStamped, element:TransformStamped,i:int):
 def publish_map():
     
     pass
+
+def publish_particle_images():
+     
+     pass
 
 
 def main():
