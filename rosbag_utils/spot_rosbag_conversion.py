@@ -108,24 +108,21 @@ def main():
                 marker_tf_array = MarkerArray()
             output_bag.write(topic, msg, t)
             #adding map to odom transform as a tf_static
-            if topic == '/tf_static':
-                # print(msg)
-                for element in msg.transforms:
-                    # print(element.header.frame_id)
-                    # print(element.child_frame_id)
-                    if element.child_frame_id == 'base_arm_link':
-                        map_to_odom = TransformStamped()
-                        map_to_odom.header = element.header
-                        map_to_odom.header.frame_id = 'map'
-                        map_to_odom.child_frame_id = 'odom'
-                        map_to_odom.transform.translation.x = 0.0
-                        map_to_odom.transform.translation.y = 0.0
-                        map_to_odom.transform.translation.z = 0.0
-                        map_to_odom.transform.rotation.x = 0.0
-                        map_to_odom.transform.rotation.y = 0.0
-                        map_to_odom.transform.rotation.z = 0.0
-                        map_to_odom.transform.rotation.w = 1.0
-                        output_bag.write('/tf_static', map_to_odom, t)
+            # if topic == '/tf_static':
+            #     for element in msg.transforms:
+            #         if element.child_frame_id == 'base_arm_link':
+            #             map_to_odom = TransformStamped()
+            #             map_to_odom.header = element.header
+            #             map_to_odom.header.frame_id = 'map'
+            #             map_to_odom.child_frame_id = 'odom'
+            #             map_to_odom.transform.translation.x = 0.0
+            #             map_to_odom.transform.translation.y = 0.0
+            #             map_to_odom.transform.translation.z = 0.0
+            #             map_to_odom.transform.rotation.x = 0.0
+            #             map_to_odom.transform.rotation.y = 0.0
+            #             map_to_odom.transform.rotation.z = 0.0
+            #             map_to_odom.transform.rotation.w = 1.0
+            #             output_bag.write('/tf_static', map_to_odom, t)
             if topic == '/tf':
                 for element in msg.transforms:
                     if element.child_frame_id == 'body':
