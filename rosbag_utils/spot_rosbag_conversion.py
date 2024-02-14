@@ -6,7 +6,7 @@ from geometry_msgs.msg import PoseArray, PoseStamped, Pose, TransformStamped
 from visualization_msgs.msg import Marker, MarkerArray
 import os
 from scipy.spatial.transform import Rotation as R
-# from nerfstudio.models.instant_ngp import NGPModel
+# from nerfstudio.models.instant_ngp import NGPModel 
 
 def extract_pose_from_tf(element:TransformStamped):
             p = PoseStamped()
@@ -95,7 +95,8 @@ def main():
     output_bag_name = 'with_pose.bag'
     output_bag_path = os.path.join(bagpath, output_bag_name)
     print(topic_list)
-    viz_marker = False
+    viz_marker = True
+    counter = 0
     with rosbag.Bag(output_bag_path, 'w') as output_bag:
         for i,(topic, msg, t) in enumerate(input_bag.read_messages()):
             if viz_marker:
@@ -103,28 +104,27 @@ def main():
                 marker_tf_array = MarkerArray()
             output_bag.write(topic, msg, t)
             #adding map to odom transform as a tf_static
-            if topic == '/tf_static':
-                # print(msg)
-                for element in msg.transforms:
-                    # print(element.header.frame_id)
-                    # print(element.child_frame_id)
-                    if element.child_frame_id == 'base_arm_link':
-                        map_to_odom = TransformStamped()
-                        map_to_odom.header = element.header
-                        map_to_odom.header.frame_id = 'map'
-                        map_to_odom.child_frame_id = 'odom'
-                        map_to_odom.transform.translation.x = 0.0
-                        map_to_odom.transform.translation.y = 0.0
-                        map_to_odom.transform.translation.z = 0.0
-                        map_to_odom.transform.rotation.x = 0.0
-                        map_to_odom.transform.rotation.y = 0.0
-                        map_to_odom.transform.rotation.z = 0.0
-                        map_to_odom.transform.rotation.w = 1.0
-                        output_bag.write('/tf_static', map_to_odom, t)
+            # if topic == '/tf_static':
+            #     for element in msg.transforms:
+            #         if element.child_frame_id == 'base_arm_link':
+            #             map_to_odom = TransformStamped()
+            #             map_to_odom.header = element.header
+            #             map_to_odom.header.frame_id = 'map'
+            #             map_to_odom.child_frame_id = 'odom'
+            #             map_to_odom.transform.translation.x = 0.0
+            #             map_to_odom.transform.translation.y = 0.0
+            #             map_to_odom.transform.translation.z = 0.0
+            #             map_to_odom.transform.rotation.x = 0.0
+            #             map_to_odom.transform.rotation.y = 0.0
+            #             map_to_odom.transform.rotation.z = 0.0
+            #             map_to_odom.transform.rotation.w = 1.0
+            #             output_bag.write('/tf_static', map_to_odom, t)
             if topic == '/tf':
                 for element in msg.transforms:
                     if element.child_frame_id == 'body':
                         p = extract_pose_from_tf(element)
+                        if counter == 0:
+                             initial_pose = p
                         if viz_marker:
                             spot_pose, ros_tf = vizualize_path(p, element, i)
                             marker_pose_array.markers.append(spot_pose)
@@ -132,7 +132,7 @@ def main():
                         output_bag.write('/spot_pose', p, t)           
 
             if topic == '/spot/camera/hand_color/image':
-                poses_array = generate_and_vizualize_particles(p)
+                poses_array = generate_and_vizualize_particles(initial_pose)
                 output_bag.write('/spot_particles', poses_array, t)   
 
             if viz_marker:
