@@ -6,8 +6,7 @@ from geometry_msgs.msg import PoseArray, PoseStamped, Pose, TransformStamped
 from visualization_msgs.msg import Marker, MarkerArray
 import os
 from scipy.spatial.transform import Rotation as R
-from nerfstudio.models.instant_ngp import NGPModel 
-import torch
+
 
 def extract_pose_from_tf(element:TransformStamped):
 			p = PoseStamped()
@@ -79,11 +78,6 @@ def vizualize_path(p:PoseStamped, element:TransformStamped,i:int):
 	return pose, ros_tf
 
 
-def publish_particle_images():
-	model = NGPModel()
-	model_trained = model.load('/home/nirml/software/nerfstudio/outputs/2023-12-12-21-43-32/instant-ngp/2024-02-07_233053/nerfstudio_models/step-000029999.ckpt')
-	
-
 
 
 
@@ -106,6 +100,7 @@ def main():
 			output_bag.write(topic, msg, t)
 			if topic == '/tf':
 				for element in msg.transforms:
+					print(element.child_frame_id)
 					if element.child_frame_id == 'body':
 						p = extract_pose_from_tf(element)
 						if counter == 0:
